@@ -5,11 +5,14 @@ A Python tool for testing different stock trading strategies and comparing them 
 ## Current Features
 - Downloads daily historical price data using yfinance
 - Mean-Reversion strategy using short-term and long-term rolling averages
+- Moving-Average-Crossover strategy using short-term and long-term rolling averages
+- Trend-Filter strategy using long-term rolling average and current price
+- Relative-Strength-Index
 - Compares buy-and-hold strategy to existing strategies
 
 ## How to run
-pip install yfinance pandas
-python backtest.py
+- pip install yfinance, pandas
+- python backtest.py
 
 ## Status
 Work in Progress - Needs more strategies, risk metrics, transaction costs, tests, possible interface
