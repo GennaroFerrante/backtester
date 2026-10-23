@@ -1,18 +1,33 @@
-from strategies import MeanReversion, MovingAverageCrossover, TrendFilter, RelativeStrengthIndex
+from strategies import MeanReversion, MovingAverageCrossover, TrendFilter, RelativeStrengthIndex, BuyAndHold
 from engine import Backtest
 from data import close_prices
+from plots import plot_results
 
 start = 202
 strategies = {
+    "Buy and hold": BuyAndHold(),
     "Mean reversion": MeanReversion(50, 200, 0.99),
     "MA crossover": MovingAverageCrossover(50, 200),
     "Trend filter": TrendFilter(200),
     "RSI": RelativeStrengthIndex(),
 }
 
-for name, strategy in strategies.items():
-    total_return, days_invested = Backtest(close_prices, strategy, start=start).run()
-    print(str(name) + " returned " + str(round(total_return, 2)) + "% over " + str(days_invested) + " days invested")
+# header row
+print(f"{'Strategy':15} {'Total':>9} {'Annual':>8} {'Vol':>7} {'Sharpe':>7} {'Max DD':>8} {'Days':>6}")
+print("-" * 66)
 
-bah = (float(close_prices.iloc[-1] / close_prices.iloc[start - 1]) - 1) * 100
-print("Buy and Hold returned " + str(round(bah, 2)) + "% over " + str(len(close_prices)) + " days invested")
+all_returns = {}
+
+for name, strategy in strategies.items():
+    r = Backtest(close_prices, strategy, start=start).run()
+    if name == "MA crossover" or name == "Buy and hold":
+        all_returns[name] = r["returns"]
+    print(f"{name:15} "
+          f"{r['total_return']:9.1%} "
+          f"{r['annualized_return']:8.1%} "
+          f"{r['annualized_volatility']:7.1%} "
+          f"{r['sharpe_ratio']:7.2f} "
+          f"{r['max_drawdown']:8.1%} "
+          f"{r['days_invested']:6.0f}")
+
+plot_results(all_returns)

@@ -98,3 +98,7 @@ class RelativeStrengthIndex(Strategy):
                 signals.append(0)
 
         return pd.Series(signals, index=prices.index)
+
+class BuyAndHold(Strategy):
+    def generate_signals(self, prices):
+        return pd.Series(1, index=prices.index)
