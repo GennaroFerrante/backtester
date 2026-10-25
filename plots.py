@@ -5,7 +5,7 @@ def plot_results(all_returns):
 
     for name, returns in all_returns.items():
         equity = (1 + returns.fillna(0)).cumprod()
-        drawdown = equity / equity.cummax() - 1
+        drawdown = equity / equity.cummax().clip(lower=1.0) - 1
         top.plot(equity, label=name)
         bottom.plot(drawdown, label=name)
 
