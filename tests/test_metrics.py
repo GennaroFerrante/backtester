@@ -1,6 +1,5 @@
 from metrics import total_return, annualized_return, annualized_volatility, sharpe_ratio, max_drawdown
 import pandas as pd
-import math
 import pytest
 
 mixed_test = pd.Series([0.15, -0.3, 0.25, -0.05, 0.1])

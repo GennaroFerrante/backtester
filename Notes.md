@@ -34,3 +34,12 @@
 - Looking at days invested for each strategy with (50, 200, 0.99, 14), MR ran for 600 days, MAC ran for 3374 days, TF ran for 3413 days, and RSI ran for 1169 days, while the span was 4019 trading days
 - MR returns roughly 0.111% per day invested, MAC returns 0.042%, TF returns 0.046%, RSI returns 0.112%, while BAH returns 0.054%
 - Most of the loss (loss meaning no-gain) comes from not being invested during growth. It could be possible to combine strategies so that it limits missing out on growth
+
+## Plots
+- Compared to the BAH total equity curve and max drawdown curve, the TF strategy had a lower total equity curve but almot always maintained a higher max drawdown.
+- RSI also had a lower total equity curve and max drawdown never was as low as BAH.
+- MR greatly avoided the max drawdown in 2020 that BAH saw, but was nowhere near as close to total equity at any point
+- MAC often had the same or lower (more negative) max drawdown that BAH had, while having a lower total equity
+
+## Test Notes
+- First look-ahead test missed a planted bug; replaced it with a truncation test that catches it.
