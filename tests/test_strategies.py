@@ -1,7 +1,6 @@
 from strategies import MovingAverageCrossover, MeanReversion, TrendFilter, RelativeStrengthIndex, BuyAndHold
 import numpy as np
 import pandas as pd
-import pytest
 
 def make_prices(days=800):
     rng = np.random.default_rng(seed=42)
