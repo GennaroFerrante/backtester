@@ -2,7 +2,6 @@ from strategies import Strategy, BuyAndHold
 from engine import Backtest
 import pandas as pd
 import numpy as np
-import math
 import pytest
 
 def make_prices(days=800):
@@ -25,8 +24,6 @@ def make_timing_data(signal_values):
     return prices, signals
 
 random_prices = make_prices()
-prices_zeroes = pd.Series([0.0, 0.0, 0.0])
-prices_custom = pd.Series([100, 110, 99, 120, 126])
 
 def test_never_invested_earns_nothing():
     start = 202
@@ -37,7 +34,7 @@ def test_never_invested_earns_nothing():
 
 def test_BAH_invested_matches_price_change():
     start = 202
-    results = Backtest(random_prices, BuyAndHold(), start).run()
+    results = Backtest(random_prices, BuyAndHold(), start=start).run()
     expected = random_prices.iloc[-1] / random_prices.iloc[start - 1] - 1
     assert results["total_return"] == pytest.approx(expected)
 
