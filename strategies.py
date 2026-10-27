@@ -102,3 +102,11 @@ class RelativeStrengthIndex(Strategy):
 class BuyAndHold(Strategy):
     def generate_signals(self, prices):
         return pd.Series(1, index=prices.index)
+
+class CombinedStrategy(Strategy):
+    def __init__(self, strategies):
+        self.strategies = strategies
+
+    def generate_signals(self, prices):
+        all_signals = [strategy.generate_signals(prices) for strategy in self.strategies]
+        return pd.concat(all_signals, axis=1).max(axis=1)
