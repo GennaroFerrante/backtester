@@ -25,6 +25,7 @@
 - Buy and hold started ~200 days earlier than the strategies could trade
 - Look-ahead bias: trend filter and RSI decided using the same day's close they traded at. Fixed by deciding with the previous day's data
 - RSI class never sold (`not holding` instead of `holding`); found by comparing the new class's results to the old function
+- Costs subtracted after trimming to `start` made pandas re-add the trimmed dates as NaN, so annualized return used the wrong number of days. Fixed by applying costs before trimming; added a test that the returns length matches the start date
 
 ## Refactor to classes
 - Moved strategies into classes inheriting from a Strategy base class, with one shared Backtest engine that handles timing and returns
@@ -46,7 +47,8 @@
 - First look-ahead test missed a planted bug; replaced it with a truncation test that catches it.
 
 ## Combined Test Results
-```Strategy                                          Total   Annual     Vol  Sharpe   Max DD   Days
+```
+Strategy                                          Total   Annual     Vol  Sharpe   Max DD   Days
 --------------------------------------------------------------------------------------------------- Buy and hold                                     761.2%    14.4%   16.9%    0.88   -33.7%   4022
 Mean reversion                                    94.2%     4.2%    8.6%    0.52   -23.1%    600
 MA crossover                                     312.0%     9.3%   14.4%    0.69   -33.7%   3380
@@ -75,3 +77,74 @@ MA crossover + Trend filter + RSI                898.1%    15.5%   16.8%    0.94
 - Cash earns 0%, and Sharpe uses a 0% risk-free rate
 - Certain numbers changed because of a two-week change in the end date, as well as a one day delay in the start of trading
 - All strategies were tested on SPY with close prices from yfinance between 2010 and 2026, start=202, risk free rate of 0, and with the Sharpe Ratio using the simple average of daily returns
+
+## Combined Test Results for 2000-2010
+```
+Strategy                                          Total   Annual     Vol  Sharpe   Max DD   Days
+------------------------------------------------------------------------------------------------
+Buy and hold                                      12.9%     1.2%   22.0%    0.16   -55.2%   2564
+Mean reversion                                   -45.1%    -5.7%   19.1%   -0.21   -62.9%   1018
+MA crossover                                     114.0%     7.8%   10.6%    0.76   -15.7%   1447
+Trend filter                                      56.9%     4.5%    9.9%    0.50   -23.3%   1467
+RSI                                              -17.7%    -1.9%   19.8%    0.00   -55.2%   1280
+Mean reversion + MA crossover                     17.4%     1.6%   21.8%    0.18   -53.3%   2465
+Mean reversion + Trend filter                    -13.1%    -1.4%   21.3%    0.04   -58.1%   2385
+Mean reversion + RSI                             -26.5%    -3.0%   20.2%   -0.05   -56.3%   1419
+MA crossover + Trend filter                      118.0%     8.0%   11.0%    0.75   -15.7%   1603
+MA crossover + RSI                                23.5%     2.1%   21.6%    0.20   -55.2%   2420
+Trend filter + RSI                                20.2%     1.8%   21.5%    0.19   -55.2%   2413
+Mean reversion + MA crossover + Trend filter      20.8%     1.9%   21.8%    0.19   -53.3%   2521
+Mean reversion + MA crossover + RSI               10.3%     1.0%   22.0%    0.15   -55.2%   2559
+Mean reversion + Trend filter + RSI                7.0%     0.7%   21.8%    0.14   -55.2%   2519
+MA crossover + Trend filter + RSI                 23.8%     2.1%   21.6%    0.21   -55.2%   2453
+```
+- Rankings flipped compared to 2010-2026
+- Trend strategies did best: MAC +114% (-15.7% DD), TF +57% (-23.3% DD) vs. BAH +13% (-55.2% DD)
+- Dip-buying strategies failed: MR -45%, RSI -18%. In long bear markets, big drops kept falling instead of rebounding
+- 2010-2026's best combinations didn't hold up: MR+TF went from best on every measure to a worse drawdown than BAH (-58.1%)
+- Most robust: TF alone. Sharpe at least as good as BAH in both periods (0.88 vs 0.88, 0.50 vs 0.16), max DD ~-23% in both
+- Lesson: strategies depend on market regime. Dip-buying works in bull markets with quick recoveries; trend-following works in long declines
+- Picking the best combination from one period overfits to that period (data snooping)
+
+## Transaction Costs (10/27/26)
+- Added a cost of 0.1% of the amount traded on every position change (roughly covers commissions, bid-ask spread, and slippage)
+- Each buy and each sell counts as one trade
+
+### 2010-2026, 0.1% cost
+```
+Strategy                                          Total   Annual     Vol  Sharpe   Max DD   Days  Trades
+--------------------------------------------------------------------------------------------------------
+Buy and hold                                     761.2%    14.4%   16.9%    0.88   -33.7%   4022       0
+--------------------------------------------------------------------------------------------------------
+Mean reversion                                    91.5%     4.2%    8.6%    0.51   -23.2%    600      14
+MA crossover                                     306.2%     9.2%   14.4%    0.68   -33.7%   3380      14
+Trend filter                                     332.2%     9.6%   11.8%    0.84   -25.0%   3419      78
+RSI                                              260.2%     8.4%   13.2%    0.67   -28.3%   1169      32
+--------------------------------------------------------------------------------------------------------
+Mean reversion + MA crossover                    689.1%    13.8%   16.8%    0.86   -33.7%   3980      14
+Mean reversion + Trend filter                    756.6%    14.4%   14.2%    1.02   -30.1%   3818      54
+Mean reversion + RSI                             201.0%     7.1%   13.6%    0.58   -28.3%   1284      30
+MA crossover + Trend filter                      308.5%     9.2%   14.8%    0.67   -33.7%   3586      38
+MA crossover + RSI                               920.2%    15.7%   16.6%    0.96   -33.7%   3907      12
+Trend filter + RSI                               966.2%    16.0%   16.7%    0.97   -33.7%   3966      26
+--------------------------------------------------------------------------------------------------------
+Mean reversion + MA crossover + Trend filter     709.5%    14.0%   16.8%    0.87   -33.7%   3985      14
+Mean reversion + MA crossover + RSI              761.2%    14.4%   16.9%    0.88   -33.7%   4022       0
+Mean reversion + Trend filter + RSI              825.5%    15.0%   16.8%    0.92   -33.7%   3996      20
+MA crossover + Trend filter + RSI                892.1%    15.5%   16.8%    0.94   -33.7%   3992       6
+```
+
+### 2000-2010, 0.1% cost
+```
+(paste table here)
+```
+
+### Findings
+- TF hit hardest: 78 trades (price crosses its 200-day average often in choppy markets). 2010-2026 return fell from 367% to 332%, and its Sharpe dropped below BAH (0.84 vs 0.88)
+- MAC barely affected: only 14 trades, since two averages cross much less often than price crosses one
+- Combinations often trade less than their parts (TF + RSI: 26 trades vs. 78 for TF alone), since one strategy is often still holding when the other steps out
+- Verified the cost code by hand: return after costs = no-cost growth x 0.999^trades (TF: 4.674 x 0.925 = 4.32 -> 332%)
+
+### Limitations
+- BAH and any strategy already holding on the start day get their first position free (the buy happens before `start` and is trimmed away)
+- Cost is a flat percentage; real costs vary with market conditions and trade size

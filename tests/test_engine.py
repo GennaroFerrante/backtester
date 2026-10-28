@@ -45,7 +45,6 @@ def test_signal_on_day_1_earns_day_3_move():
     assert result["total_return"] == pytest.approx(120 / 99 - 1)
     assert result["days_invested"] == 1
 
-
 def test_signal_on_day_2_earns_day_4_move():
     prices, signals = make_timing_data([0, 0, 1, 0, 0])
     result = Backtest(prices, FixedSignals(signals)).run()
@@ -53,10 +52,14 @@ def test_signal_on_day_2_earns_day_4_move():
     assert result["total_return"] == pytest.approx(126 / 120 - 1)
     assert result["days_invested"] == 1
 
-
 def test_two_held_days_compound():
     prices, signals = make_timing_data([0, 1, 1, 0, 0])
     result = Backtest(prices, FixedSignals(signals)).run()
 
     assert result["total_return"] == pytest.approx((120 / 99) * (126 / 120) - 1)
     assert result["days_invested"] == 2
+
+def test_returns_length_matches_start():
+    start = 202
+    result = Backtest(random_prices, BuyAndHold(), start=start, cost=0.001).run()
+    assert len(result["returns"]) == len(random_prices) - start
