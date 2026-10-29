@@ -1,0 +1,16 @@
+Strategy,Total Return,Annualized Return,Annualized Volatility,Sharpe Ratio,Max Drawdown,Days Invested,Trades
+Buy and hold,7.6118,0.1444,0.1692,0.8824,-0.3372,4022,0
+Mean reversion,0.9154,0.0416,0.0865,0.5141,-0.2325,600,14
+MA crossover,3.0622,0.0918,0.1436,0.6836,-0.3372,3380,14
+Trend filter,3.3223,0.0961,0.1176,0.8389,-0.2497,3419,78
+RSI,2.6018,0.0836,0.1323,0.673,-0.2832,1169,32
+Mean reversion + MA crossover,6.8906,0.1382,0.1676,0.8566,-0.3372,3980,14
+Mean reversion + Trend filter,7.566,0.144,0.1416,1.0214,-0.3006,3818,54
+Mean reversion + RSI,2.0101,0.0715,0.1361,0.5754,-0.2832,1284,30
+MA crossover + Trend filter,3.0847,0.0922,0.148,0.6703,-0.3372,3586,38
+MA crossover + RSI,9.202,0.1566,0.1661,0.9594,-0.3372,3907,12
+Trend filter + RSI,9.6622,0.1598,0.1666,0.9738,-0.3372,3966,26
+Mean reversion + MA crossover + Trend filter,7.0951,0.14,0.1677,0.8658,-0.3372,3985,14
+Mean reversion + MA crossover + RSI,7.6118,0.1444,0.1692,0.8824,-0.3372,4022,0
+Mean reversion + Trend filter + RSI,8.2548,0.1496,0.1678,0.915,-0.3372,3996,20
+MA crossover + Trend filter + RSI,8.9214,0.1546,0.168,0.9404,-0.3372,3992,6

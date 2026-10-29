@@ -136,10 +136,29 @@ MA crossover + Trend filter + RSI                892.1%    15.5%   16.8%    0.94
 
 ### 2000-2010, 0.1% cost
 ```
-(paste table here)
+Strategy                                          Total   Annual     Vol  Sharpe   Max DD   Days  Trades
+--------------------------------------------------------------------------------------------------------
+Buy and hold                                      12.9%     1.2%   22.0%    0.16   -55.2%   2564       0
+--------------------------------------------------------------------------------------------------------
+Mean reversion                                   -45.6%    -5.8%   19.1%   -0.22   -63.0%   1018       8
+MA crossover                                     111.4%     7.6%   10.6%    0.75   -15.7%   1447      12
+Trend filter                                      43.8%     3.6%    9.9%    0.41   -25.0%   1467      87
+RSI                                              -18.8%    -2.0%   19.8%   -0.00   -55.2%   1280      13
+--------------------------------------------------------------------------------------------------------
+Mean reversion + MA crossover                     16.0%     1.5%   21.8%    0.18   -53.3%   2465      12
+Mean reversion + Trend filter                    -18.6%    -2.0%   21.3%    0.01   -58.8%   2385      65
+Mean reversion + RSI                             -27.5%    -3.1%   20.2%   -0.06   -56.7%   1419      13
+MA crossover + Trend filter                      109.0%     7.5%   11.0%    0.71   -16.0%   1603      42
+MA crossover + RSI                                23.0%     2.1%   21.6%    0.20   -55.2%   2420       4
+Trend filter + RSI                                16.9%     1.5%   21.5%    0.18   -55.2%   2413      28
+--------------------------------------------------------------------------------------------------------
+Mean reversion + MA crossover + Trend filter      18.6%     1.7%   21.8%    0.19   -53.3%   2521      18
+Mean reversion + MA crossover + RSI               10.1%     0.9%   22.0%    0.15   -55.2%   2559       2
+Mean reversion + Trend filter + RSI                4.7%     0.5%   21.8%    0.13   -55.2%   2519      22
+MA crossover + Trend filter + RSI                 22.9%     2.0%   21.6%    0.20   -55.2%   2453       8
 ```
 
-### Findings
+### Findings (2010-2026 with costs)
 - TF hit hardest: 78 trades (price crosses its 200-day average often in choppy markets). 2010-2026 return fell from 367% to 332%, and its Sharpe dropped below BAH (0.84 vs 0.88)
 - MAC barely affected: only 14 trades, since two averages cross much less often than price crosses one
 - Combinations often trade less than their parts (TF + RSI: 26 trades vs. 78 for TF alone), since one strategy is often still holding when the other steps out
@@ -148,3 +167,20 @@ MA crossover + Trend filter + RSI                892.1%    15.5%   16.8%    0.94
 ### Limitations
 - BAH and any strategy already holding on the start day get their first position free (the buy happens before `start` and is trimmed away)
 - Cost is a flat percentage; real costs vary with market conditions and trade size
+
+### Findings (2000-2010 with costs)
+- TF traded 87 times in ~10 years (~8.5/year) vs. 78 in 16 years (~5/year) for 2010-2026.
+  Choppier market = more crossings of the 200-day average = higher costs (57% -> 44%)
+- MAC is the strongest strategy here even after costs: +111% vs. BAH +13%, Sharpe 0.75 vs. 0.16,
+  max DD -15.7% vs. -55.2%, with only 12 trades
+- Costs didn't change the ranking: dip-buying strategies (MR, RSI) still lost money
+
+### Comparing both periods with costs
+- Trend strategies consistently reduced drawdowns: TF max DD was -25.0% in both periods vs.
+  BAH's -33.7% and -55.2%
+- In the bull market (2010-2026), trend strategies trailed BAH slightly on Sharpe
+  (TF 0.84, MAC 0.68 vs. 0.88). In the bear-heavy decade (2000-2010), they beat it by a lot
+  (TF 0.41, MAC 0.75 vs. 0.16)
+- No strategy or combination beat BAH on every measure in both periods
+- Trend-following acts more like insurance than a way to beat the market: it costs a little
+  in good decades and saves a lot in bad ones
