@@ -256,3 +256,32 @@ Trend filter on stocks, hold TLT  144.5%    5.8%   8.7%  0.69  -21.9%
 - MR + TF: best Sharpe in 2010-2026, worst in 2003-2010, so it is still a
   bull-market strategy. It was also chosen using 2010-2026 data
 - To do: rerun SPY alone from 2003-05-19 so the 2000s comparison is fair
+
+## Week 9: Parameter sweeps (11/02/26), SPY, 0.1% cost, start = 302
+- TF windows 50-300 (step 10); MAC short 10-90 x long 100-300 (step 10)
+- Full results saved in results/sweep_*.csv
+
+### Trend filter
+- 2010-2026: plateau. Sharpe 0.69-0.85 for every window from 90-300 days;
+  best 140 (0.85), default 200 (0.81). Short windows (50-80) worse
+- 2000-2010: Sharpe rises with window length, ~0.10 at 100-110 to 0.68 at
+  290; trades fall from 169 to 29. Slower signals worked better in a choppy,
+  crash-heavy decade
+- Out-of-sample: 2010-2026's best (140) scored 0.35 in 2000-2010, below that
+  decade's median (0.39)
+- Robust result: almost every window beat BAH Sharpe in 2000-2010; almost none
+  did in 2010-2026. The insurance role doesn't depend on the exact window
+
+### MA crossover
+- 2010-2026: nearly flat surface (most settings 0.65-0.78); best 10/220 (0.86)
+  looks like noise on a flat field
+- 2000-2010: long windows >= 170 clearly better (median 0.64 vs 0.37);
+  best 50/220 (0.83)
+- Out-of-sample: 10/220 scored 0.51 in 2000-2010; 50/220 scored 0.68 in
+  2010-2026 (below that period's median)
+- Default 50/200: 0.71 and 0.66, solid in both, best in neither
+
+### Conclusion
+- Defaults (200, 50/200) were not overfit
+- The best exact setting changes with the market regime, so optimizing on
+  one period doesn't carry over. Long windows (~200+) are sound in both
