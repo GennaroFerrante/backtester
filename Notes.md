@@ -184,3 +184,75 @@ MA crossover + Trend filter + RSI                 22.9%     2.0%   21.6%    0.20
 - No strategy or combination beat BAH on every measure in both periods
 - Trend-following acts more like insurance than a way to beat the market: it costs a little
   in good decades and saves a lot in bad ones
+
+## Multiple markets (10/28/26), 0.1% cost
+- Markets: SPY, QQQ, IWM (small caps), EFA (international), TLT (long-term bonds)
+- Full tables saved in results/
+- Note: EFA and TLT data start later, so their 2000-2010 tests begin ~2002-2003
+
+### Trend filter vs. buy-and-hold
+| Market | Period | TF Sharpe | BAH Sharpe | TF Max DD | BAH Max DD | TF trades |
+|---|---|---|---|---|---|---|
+| SPY | 2000–2010 | 0.41 | 0.16 | −25% | −55% | 87 |
+| SPY | 2010–2026 | 0.84 | 0.88 | −25% | −34% | 78 |
+| QQQ | 2000–2010 | 0.41 | 0.06 | −23% | −77% | 89 |
+| QQQ | 2010–2026 | 0.83 | 0.95 | −26% | −35% | 86 |
+| EFA | 2000–2010 | 0.92 | 0.42 | −16% | −61% | 49 |
+| EFA | 2010–2026 | 0.41 | 0.46 | −27% | −34% | 126 |
+| IWM | 2000–2010 | 0.19 | 0.40 | −39% | −59% | 107 |
+| IWM | 2010–2026 | 0.45 | 0.56 | −34% | −41% | 127 |
+| TLT | 2000–2010 | 0.10 | 0.40 | −23% | −27% | 87 |
+| TLT | 2010–2026 | 0.03 | 0.16 | −50% | −48% | 185 |
+
+### Findings
+- TF reduced max drawdown vs. BAH in all 8 stock runs, confirming the SPY result
+- TF beat BAH on Sharpe in SPY, EFA, and QQQ during 2000-2010; trailed slightly
+  in every 2010-2026 bull market
+- QQQ 2000-2010 (dot-com crash) is the strongest case for trend-following:
+  BAH -27% with -77% max DD; TF +61% with -23% DD; MAC +73% with -30% DD
+- Exceptions: IWM 2000-2010 (TF Sharpe 0.19 vs. 0.40, small caps did well early
+  in the decade) and TLT both periods (bonds chop around their average; TF made
+  185 trades in TLT 2010-2026 and still had a worse DD than BAH)
+- MAC inconsistent: strong on SPY and QQQ 2000-2010, weak on IWM and EFA
+- MR + TF had the best Sharpe on SPY, IWM, and EFA for 2010-2026, so it fits that
+  era, not just SPY. Mixed in 2000-2010: failed on SPY, beat BAH on QQQ
+- Dip-buying failed badly in crashes: on QQQ 2000-2010, RSI lost 61% and MR + RSI
+  lost 66%, with drawdowns worse than BAH
+- MR on TLT 2000-2010: Sharpe 0.88, max DD -6%, but only 12 trades
+
+### Bugs caught
+- QQQ 2000-2010 file first contained TLT 2010-2026 results (caught because days
+  invested was 4022, the length of the other window). Fixed and rerun
+
+## Equal-weight portfolio (11/01/26), 0.1% cost
+- 25% each in SPY, IWM, EFA, TLT, rebalanced daily (rebalancing cost not modeled)
+- Portfolio dates: 2003-05-19 to 2010 (EFA/TLT start later, so it misses the
+  dot-com crash) and 2010-10-21 to 2026
+
+```
+2003-2010                          Total  Annual   Vol  Sharpe  Max DD
+Buy and hold                       87.7%    8.6%  16.7%  0.58  -42.6%
+Trend filter                       55.8%    6.0%   9.5%  0.66  -14.7%
+MA crossover                       65.2%    6.8%  10.1%  0.70  -16.0%
+Mean reversion + Trend filter      69.0%    7.1%  15.4%  0.52  -40.2%
+Trend filter on stocks, hold TLT   68.5%    7.1%   9.5%  0.77  -14.2%
+
+2010-2026                          Total  Annual   Vol  Sharpe  Max DD
+Buy and hold                      296.0%    9.0%  12.9%  0.73  -28.0%
+Trend filter                      125.1%    5.2%   8.4%  0.65  -16.1%
+MA crossover                      106.5%    4.6%   9.9%  0.51  -26.2%
+Mean reversion + Trend filter     319.2%    9.4%  11.1%  0.86  -28.0%
+Trend filter on stocks, hold TLT  144.5%    5.8%   8.7%  0.69  -21.9%
+```
+
+### Findings
+- Diversification alone lowered drawdown (2010-2026: -28% vs. -34% for SPY)
+  but also lowered Sharpe (0.73 vs. 0.88), since SPY was the best market
+- 2003-2010: TF on stocks + hold TLT was best on Sharpe, drawdown, and
+  volatility; only total return trailed BAH
+- 2010-2026: trend portfolios cut drawdowns but trailed BAH on Sharpe;
+  insurance was expensive in a long bull market
+- Holding TLT beat timing it in both periods (agrees with TF failing on bonds)
+- MR + TF: best Sharpe in 2010-2026, worst in 2003-2010, so it is still a
+  bull-market strategy. It was also chosen using 2010-2026 data
+- To do: rerun SPY alone from 2003-05-19 so the 2000s comparison is fair

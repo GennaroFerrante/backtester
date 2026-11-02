@@ -50,15 +50,17 @@ for market in markets:
                 new_index = list(df.index)
                 new_index[count + 1] = label
                 df.index = new_index
-                all_returns[label] = result
+                all_returns[label] = result["returns"]
                 count += 1
 
         df[["Days Invested", "Trades"]] = df[["Days Invested", "Trades"]].astype(int)
 
         if period == ("2000-01-01", "2010-12-31"):
-            df.round(4).to_csv(market + "_2000-2010_cost" + str(cost)+".csv")
+            pass
+            #df.round(4).to_csv(market + "_2000-2010_cost" + str(cost)+".csv")
         elif period == ("2010-01-01", "2026-10-20"):
-            df.round(4).to_csv(market + "_2010-2026_cost" + str(cost)+".csv")
+            pass
+            #df.round(4).to_csv(market + "_2010-2026_cost" + str(cost)+".csv")
 
 #plot_results({name: all_returns[name] for name in
               #["Buy and hold", "Trend filter", "Trend filter + RSI", "Mean reversion + Trend filter", "Mean reversion + Trend filter + RSI"]})
